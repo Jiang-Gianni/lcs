@@ -9,17 +9,32 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var timeout = time.Second
+var timeout = time.Millisecond * 250
 
-func Scrape() {
+func Scrape(skip string) {
 	s := NewStore()
 
-	questions, err := GetQuestionList("0")
+	questions, err := GetQuestionList(skip)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	for _, q := range questions {
+		if q.PaidOnly {
+			fmt.Printf("Skipping %s cause you got no money to pay for premium\n", q.TitleSlug)
+			continue
+		}
+
+		count, err := s.Q.CountQuestionByTitleSlug(context.Background(), q.TitleSlug)
+		if err != nil {
+			fmt.Println(q.TitleSlug, " count error: ", err)
+			continue
+		}
+		if int(count) > 0 {
+			fmt.Println(q.TitleSlug, " is already stored")
+			continue
+		}
+
 		time.Sleep(timeout)
 
 		fmt.Println("Working on ", q.TitleSlug)

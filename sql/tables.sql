@@ -2,7 +2,7 @@
 -- drop table hint;
 -- drop table editor;
 
-create table question(
+create table if not exists question(
     id integer primary key not null,
     question_id text not null,
     link text not null,
@@ -13,13 +13,13 @@ create table question(
     content text not null
 );
 
-create table hint(
+create table if not exists hint(
     id integer primary key not null,
     question_id text not null,
     hint text not null
 );
 
-create table editor(
+create table if not exists editor(
     id integer primary key not null,
     question_id text not null,
     lang text not null,

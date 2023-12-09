@@ -19,10 +19,24 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package main
+package cmd
 
-import "github.com/Jiang-Gianni/lcs/cmd"
+import (
+	"github.com/Jiang-Gianni/lcs/scrape"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
 
-func main() {
-	cmd.Execute()
+// scrapeCmd represents the scrape command
+var scrapeCmd = &cobra.Command{
+	Use:   "scrape",
+	Short: "Scrape LeetCode questions",
+	Run: func(cmd *cobra.Command, args []string) {
+		skip := viper.GetString("skip")
+		scrape.Scrape(skip)
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(scrapeCmd)
 }

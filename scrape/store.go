@@ -3,7 +3,6 @@ package scrape
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 
 	"github.com/Jiang-Gianni/lcs/db"
@@ -14,8 +13,39 @@ type Store struct {
 	Q  *db.Queries
 }
 
+const initTables = `create table if not exists question(
+    id integer primary key not null,
+    question_id text not null,
+    link text not null,
+    title text not null,
+    title_slug text not null,
+    is_paid_only boolean not null,
+    difficulty text not null,
+    content text not null
+);
+
+create table if not exists hint(
+    id integer primary key not null,
+    question_id text not null,
+    hint text not null
+);
+
+create table if not exists editor(
+    id integer primary key not null,
+    question_id text not null,
+    lang text not null,
+    lang_slug text not null,
+    code text not null
+);
+`
+
 func NewStore() *Store {
 	store, err := sql.Open("sqlite3", "store.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = store.Exec(initTables)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -37,14 +67,6 @@ func (s *Store) SaveQuestion(ctx context.Context, q Question, c QuestionContent,
 
 	// Transaction to store to db
 	qt := s.Q.WithTx(tx)
-
-	count, err := qt.CountQuestionByTitleSlug(ctx, q.TitleSlug)
-	if err != nil {
-		return err
-	}
-	if int(count) > 0 {
-		return fmt.Errorf("%s has count %d stored", q.TitleSlug, count)
-	}
 
 	iqp := db.InsertQuestionParams{
 		QuestionID: q.FrontendQuestionID,

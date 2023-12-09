@@ -3,6 +3,7 @@ module github.com/Jiang-Gianni/lcs
 go 1.21.2
 
 require (
+	github.com/fsnotify/fsnotify v1.7.0
 	github.com/mattn/go-sqlite3 v1.14.18
 	github.com/spf13/cobra v1.8.0
 	github.com/spf13/viper v1.18.1
@@ -10,7 +11,6 @@ require (
 )
 
 require (
-	github.com/fsnotify/fsnotify v1.7.0 // indirect
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect

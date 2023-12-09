@@ -1,5 +1,5 @@
--- name: GetAllQuestion :many
-select * from question;
+-- name: GetQuestions :many
+select * from question where cast(question_id as integer) >= cast(sqlc.arg(from) as integer) and cast(question_id as integer) <= cast(sqlc.arg(to) as integer);
 
 -- name: CountQuestionByTitleSlug :one
 select count(*) from question where title_slug = ?;

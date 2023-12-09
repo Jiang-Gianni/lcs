@@ -19,10 +19,36 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
-package main
+package cmd
 
-import "github.com/Jiang-Gianni/lcs/cmd"
+import (
+	"log"
 
-func main() {
-	cmd.Execute()
+	"github.com/Jiang-Gianni/lcs/generate"
+	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+)
+
+// genCmd represents the gen command
+var genCmd = &cobra.Command{
+	Use:   "gen",
+	Short: "Generates the files for a specific language",
+	Run: func(cmd *cobra.Command, args []string) {
+		from := viper.GetInt("from")
+		to := viper.GetInt("to")
+		lang := viper.GetString("langslug")
+
+		switch lang {
+		case "golang":
+			if err := generate.Go(from, to); err != nil {
+				log.Fatal(err)
+			}
+		default:
+		}
+
+	},
+}
+
+func init() {
+	rootCmd.AddCommand(genCmd)
 }

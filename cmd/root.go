@@ -49,16 +49,19 @@ func Execute() {
 
 func init() {
 	cobra.OnInitialize(initConfig)
-
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.lcs.yaml)")
 
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	rootCmd.PersistentFlags().StringP("skip", "s", "0", "A multiple of 50, represent the page multiplied by 50 of https://leetcode.com/problemset")
+	viper.BindPFlag("skip", rootCmd.PersistentFlags().Lookup("skip"))
+
+	rootCmd.PersistentFlags().StringP("langslug", "l", "golang", "Language to generate the files for")
+	viper.BindPFlag("langslug", rootCmd.PersistentFlags().Lookup("langslug"))
+
+	rootCmd.PersistentFlags().IntP("from", "f", 0, "Only question with an ID equal or greater than this will be generated.")
+	viper.BindPFlag("from", rootCmd.PersistentFlags().Lookup("from"))
+
+	rootCmd.PersistentFlags().IntP("to", "t", 0, "Only question with an ID equal or lower than this will be generated.")
+	viper.BindPFlag("to", rootCmd.PersistentFlags().Lookup("to"))
 }
 
 // initConfig reads in config file and ENV variables if set.

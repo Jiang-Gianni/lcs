@@ -20,42 +20,6 @@ func (q *Queries) CountQuestionByTitleSlug(ctx context.Context, titleSlug string
 	return count, err
 }
 
-const getAllQuestion = `-- name: GetAllQuestion :many
-select id, question_id, link, title, title_slug, is_paid_only, difficulty, content from question
-`
-
-func (q *Queries) GetAllQuestion(ctx context.Context) ([]Question, error) {
-	rows, err := q.db.QueryContext(ctx, getAllQuestion)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
-	var items []Question
-	for rows.Next() {
-		var i Question
-		if err := rows.Scan(
-			&i.ID,
-			&i.QuestionID,
-			&i.Link,
-			&i.Title,
-			&i.TitleSlug,
-			&i.IsPaidOnly,
-			&i.Difficulty,
-			&i.Content,
-		); err != nil {
-			return nil, err
-		}
-		items = append(items, i)
-	}
-	if err := rows.Close(); err != nil {
-		return nil, err
-	}
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
-	return items, nil
-}
-
 const getEditors = `-- name: GetEditors :many
 select id, question_id, lang, lang_slug, code from editor where question_id = ? and lang_slug = ?
 `
@@ -108,6 +72,47 @@ func (q *Queries) GetHints(ctx context.Context, questionID string) ([]Hint, erro
 	for rows.Next() {
 		var i Hint
 		if err := rows.Scan(&i.ID, &i.QuestionID, &i.Hint); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getQuestions = `-- name: GetQuestions :many
+select id, question_id, link, title, title_slug, is_paid_only, difficulty, content from question where cast(question_id as integer) >= cast(?1 as integer) and cast(question_id as integer) <= cast(?2 as integer)
+`
+
+type GetQuestionsParams struct {
+	From int64
+	To   int64
+}
+
+func (q *Queries) GetQuestions(ctx context.Context, arg GetQuestionsParams) ([]Question, error) {
+	rows, err := q.db.QueryContext(ctx, getQuestions, arg.From, arg.To)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Question
+	for rows.Next() {
+		var i Question
+		if err := rows.Scan(
+			&i.ID,
+			&i.QuestionID,
+			&i.Link,
+			&i.Title,
+			&i.TitleSlug,
+			&i.IsPaidOnly,
+			&i.Difficulty,
+			&i.Content,
+		); err != nil {
 			return nil, err
 		}
 		items = append(items, i)

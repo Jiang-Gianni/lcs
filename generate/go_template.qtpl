@@ -1,26 +1,42 @@
 {% import "github.com/Jiang-Gianni/lcs/db" %}
 
-{% func goTemplate(funcName string, q db.Question, editors []db.Editor, hints []db.Hint) %}//go:build exclude
+{% func goTemplate(q db.Question, editors []db.Editor, hints []db.Hint) %}//go:build exclude
 
-// {%s q.QuestionID %} - {%s q.Title %} ({%s q.Difficulty %})
-// {%s q.Link %}
-
+/*
+{%s q.QuestionID %} - {%s q.Title %} ({%s q.Difficulty %})
+{%s q.TitleSlug %}
+{%s q.Link %}
 {% for i, h := range hints %}
-// Hint {%v i %}
-// {%s h.Hint %}
+Hint {%v i %}
+{%s h.Hint %}
 {% endfor %}
 
+*/
 package solution
 
-// import "testing"
-
-// func Test{%s funcName %}(t *testing.T) {
-
-// }
+import "testing"
 
 {% for _, e := range editors %}
+{% code
+gs := GetGoSignature(e.Code)
+%}
+func Test{%s gs.upperName %}(t *testing.T) {
+	testCases := []struct {
+		name string{% for _, p := range gs.parameters %}
+        {%s p %}{% endfor %}
+        expected {%s gs.out %}
+	}{
+		{
+            name: "First",
+        },
+	}
+	for _, tc := range testCases {
+		tc := tc
+		t.Run(tc.name, func(t *testing.T) {
+		})
+	}
+
+}
+
 {%s e.Code %}
-{% endfor %}
-
-
-{% endfunc %}
+{% endfor %}{% endfunc %}

@@ -1,0 +1,26 @@
+{% import "github.com/Jiang-Gianni/lcs/db" %}
+
+{% func goTemplate(funcName string, q db.Question, editors []db.Editor, hints []db.Hint) %}//go:build exclude
+
+// {%s q.QuestionID %} - {%s q.Title %} ({%s q.Difficulty %})
+// {%s q.Link %}
+
+{% for i, h := range hints %}
+// Hint {%v i %}
+// {%s h.Hint %}
+{% endfor %}
+
+package solution
+
+// import "testing"
+
+// func Test{%s funcName %}(t *testing.T) {
+
+// }
+
+{% for _, e := range editors %}
+{%s e.Code %}
+{% endfor %}
+
+
+{% endfunc %}

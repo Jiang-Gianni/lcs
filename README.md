@@ -19,6 +19,6 @@ It only scrapes a problem page set for each run (maximum 50 questions). Use `-s`
 
 Premium questions are skipped.
 
-`lcs get` generates the file of the stored question that have an id between the values set by the `-f` (from) and `-t` (to) flags: `lcs gen -f 0 -t 10` will consider questions with an ID between 0 and 10.
+`lcs gen` generates the files for the stored questions that have an id between the values set by the `-f` (from) and `-t` (to) flags: `lcs gen -f 0 -t 10` will consider questions with an ID between 0 and 10.
 
 As of now `golang` is the only supported language and SQL only questions are not generated.

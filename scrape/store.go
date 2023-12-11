@@ -58,7 +58,6 @@ func NewStore() *Store {
 
 func (s *Store) SaveQuestion(ctx context.Context, q Question, c QuestionContent,
 	e QuestionEditor, h QuestionHints) error {
-
 	tx, err := s.DB.BeginTx(ctx, nil)
 	if err != nil {
 		return err

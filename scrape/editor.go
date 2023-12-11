@@ -29,21 +29,27 @@ type QuestionEditor struct {
 func GetQuestionEditorData(titleSlug string) (QuestionEditor, error) {
 	ed := &Editor{}
 	client := &http.Client{}
+
 	var data = strings.NewReader(`{"query":"\n    query questionEditorData($titleSlug: String!) {\n  question(titleSlug: $titleSlug) {\n    questionId\n    questionFrontendId\n    codeSnippets {\n      lang\n      langSlug\n      code\n    }\n    envInfo\n    enableRunCode\n    hasFrontendPreview\n    frontendPreviews\n  }\n}\n    ","variables":{"titleSlug":"` + titleSlug + `"},"operationName":"questionEditorData"}`)
+
 	req, err := http.NewRequest("POST", "https://leetcode.com/graphql/", data)
 	if err != nil {
 		return ed.Data.Question, err
 	}
+
 	req.Header.Set("content-type", "application/json")
+
 	resp, err := client.Do(req)
 	if err != nil {
 		return ed.Data.Question, err
 	}
+
 	defer resp.Body.Close()
 
 	err = json.NewDecoder(resp.Body).Decode(ed)
 	if err != nil {
 		return ed.Data.Question, err
 	}
+
 	return ed.Data.Question, nil
 }

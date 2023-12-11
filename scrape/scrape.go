@@ -10,8 +10,6 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var timeout = time.Millisecond * 250
-
 func Scrape(skip string) {
 	defer func(start time.Time) {
 		fmt.Println("Scraping and saving to db time: ", time.Since(start))
